@@ -10,23 +10,30 @@ var notas = [...]int{100, 50, 50, 20, 20, 20, 20, 20, 10, 10, 10, 10, 10, 10, 10
 
 func main() {
 
-	writeInTheScreen("Selecione o valor da retirada: ")
+	writeInTheScreen("Selecione o valor da retirada ou pressione \"S\" para sair: ")
 
-	/*
-		for i := 0; i < len(notas); i++ {
+	for currentBalance > 0 {
 
-			writeInTheScreen(strconv.Itoa(notas[i]) + "; ")
+		serviceValue := requestMoney()
+
+		if serviceValue == 0 {
+
+			writeInTheScreen("Operação cancelada")
+			break
 
 		}
-	*/
 
-	var serviceValue = requestMoney()
-	if serviceValue > currentBalance {
-		writeInTheScreen("Saldo insuficiente")
-	} else {
-		writeInTheScreen(releaseValue(serviceValue))
+		if serviceValue > currentBalance {
+
+			writeInTheScreen("Saldo insuficiente")
+
+		} else {
+
+			writeInTheScreen(releaseValue(serviceValue))
+
+		}
+
 	}
-
 }
 
 func releaseValue(serviceValue int) string {
@@ -37,8 +44,11 @@ func releaseValue(serviceValue int) string {
 	for i := 0; i < len(notas); i++ {
 
 		if serviceValue == notas[i] {
+
 			holdValueToCompare = strconv.Itoa(serviceValue)
+			debitValue(notas[i])
 			break
+
 		}
 
 	}
@@ -48,8 +58,11 @@ func releaseValue(serviceValue int) string {
 		if serviceValue > notas[i] && totalSepareted <= serviceValue {
 
 			if totalSepareted+notas[i] <= serviceValue {
+
 				holdValueToCompare = holdValueToCompare + strconv.Itoa(notas[i]) + "; "
 				totalSepareted = totalSepareted + notas[i]
+				debitValue(notas[i])
+
 			}
 
 		}
@@ -61,6 +74,12 @@ func releaseValue(serviceValue int) string {
 	}
 
 	return holdValueToCompare
+
+}
+
+func debitValue(valueToDebit int) {
+
+	currentBalance = currentBalance - valueToDebit
 
 }
 
